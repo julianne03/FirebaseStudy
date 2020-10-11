@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import kr.hs.emirim.seungmin.firebasestart.firestore.FirestoreActivity;
 import kr.hs.emirim.seungmin.firebasestart.realtimedb.MemoActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -39,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent i2 = new Intent(this, MemoActivity.class);
                 startActivity(i2);
                 break;
+            case R.id.firebasefirestorebtn :
+                Intent i3 = new Intent(this, FirestoreActivity.class);
+                startActivity(i3);
             default:
                 break;
         }
