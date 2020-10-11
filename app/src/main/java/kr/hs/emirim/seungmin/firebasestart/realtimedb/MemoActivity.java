@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Random;
 
+import kr.hs.emirim.seungmin.firebasestart.AuthActivity;
 import kr.hs.emirim.seungmin.firebasestart.R;
 
 public class MemoActivity extends AppCompatActivity implements View.OnClickListener, MemoViewListener{
@@ -35,6 +37,7 @@ public class MemoActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<MemoItem> memoItems = null;
     private MemoAdapter memoAdapter = null;
     private String username = null;
+    private String uid = null;
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = firebaseDatabase.getReference();
@@ -117,7 +120,7 @@ public class MemoActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addChildEvent() {
-        databaseReference.child("memo").addChildEventListener(new ChildEventListener() {
+        databaseReference.child("memo").child(uid).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -153,8 +156,16 @@ public class MemoActivity extends AppCompatActivity implements View.OnClickListe
 
     private void init() {
         memoItems = new ArrayList<>();
-
         username = "user_"+new Random().nextInt(1000);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null) {
+            this.uid = user.getUid();
+        }else {
+            Toast.makeText(this,"로그인 하세요!",Toast.LENGTH_SHORT).show();
+            finish();
+            Intent intent = new Intent(this, AuthActivity.class);
+            startActivity(intent);
+        }
 
     }
     private void initView() {
@@ -172,6 +183,10 @@ public class MemoActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void regMemo() {
+        if(uid == null) {
+            Toast.makeText(this,"로그인 하세요!",Toast.LENGTH_SHORT).show();
+            return;
+        }
         EditText titleedit = findViewById(R.id.memotitle);
         EditText contentedit = findViewById(R.id.memocontents);
         if(titleedit.getText().toString().length() == 0 ||
@@ -187,7 +202,7 @@ public class MemoActivity extends AppCompatActivity implements View.OnClickListe
         item.setTitle(titleedit.getText().toString());
         item.setMemocontents(contentedit.getText().toString());
 
-        databaseReference.child("memo").push().setValue(item);
+        databaseReference.child("memo").child(uid).push().setValue(item);
 
         //memoItems.add(item);
         //memoAdapter.notifyDataSetChanged();
