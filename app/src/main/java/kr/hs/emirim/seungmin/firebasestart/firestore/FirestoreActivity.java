@@ -1,6 +1,7 @@
 package kr.hs.emirim.seungmin.firebasestart.firestore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,10 +12,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -27,6 +32,9 @@ public class FirestoreActivity extends AppCompatActivity implements View.OnClick
 
     private static final String TAG = "파베 TAG";
     FirebaseFirestore db = null;
+    private EventListener<DocumentSnapshot> eventListener = null;
+    private ListenerRegistration eventQueryListener = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +45,19 @@ public class FirestoreActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.deletedocbtn).setOnClickListener(this);
         findViewById(R.id.selectdatabtn).setOnClickListener(this);
         findViewById(R.id.select_where_data_btn).setOnClickListener(this);
+        findViewById(R.id.listener_data_btn).setOnClickListener(this);
+        findViewById(R.id.listener_query_data).setOnClickListener(this);
 
         db = FirebaseFirestore.getInstance();
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (eventQueryListener!=null) {
+            eventQueryListener.remove();
+        }
     }
 
     @Override
@@ -56,11 +74,74 @@ public class FirestoreActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.deletefieldbtn :
                 deleteField();
+                break;
             case R.id.selectdatabtn :
                 selectData();
+                break;
             case R.id.select_where_data_btn :
                 selectWhereData();
+                break;
+            case R.id.listener_data_btn :
+                listenerDoc();
+                break;
+            case R.id.listener_query_data :
+                listenerQuery();
         }
+    }
+
+    private void listenerQuery() {
+        Log.e(TAG,"리스너 쿼리 도큐먼트 시작");
+
+        if(eventQueryListener != null) {
+            return;
+        }
+
+        eventQueryListener =
+                db.collection("users")
+                .whereEqualTo("id","hong")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        Log.e(TAG,"ListenerQueryDoc in 1");
+
+                        if(error!=null) {
+                            Log.e(TAG,"error : "+error);
+                            return;
+                        }
+
+                        for (DocumentChange dc : value.getDocumentChanges()) {
+                            Log.e(TAG,"Type"+dc.getType());
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    Log.e(TAG,"New city");
+                            }
+                        }
+                    }
+                });
+
+    }
+
+    private void listenerDoc() {
+        final DocumentReference docRef = db.collection("users").document("user_info");
+
+        if(eventListener != null) {
+            return;
+        }
+        eventListener = new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e(TAG, "Listen failed", error);
+                }
+
+                if (value != null && value.exists()) {
+                    Log.e(TAG, "현재 데이터: " + value.getData());
+                } else {
+                    Log.e(TAG, "현재 데이터 : null");
+                }
+            }
+        };
+        docRef.addSnapshotListener(eventListener);
     }
 
     private void selectWhereData() {

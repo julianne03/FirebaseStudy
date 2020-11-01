@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button firebaserealdbbtn = (Button) findViewById(R.id.firebaserealtimedbbtn);
         firebaserealdbbtn.setOnClickListener(this);
 
+        Button firestorebtn = (Button) findViewById(R.id.firebasefirestorebtn);
+        firestorebtn.setOnClickListener(this);
+
     }
 
     @Override
