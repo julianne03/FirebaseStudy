@@ -20,12 +20,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         findViewById(R.id.firebaseauthbtn).setOnClickListener(this);
-
         findViewById(R.id.firebaserealtimedbbtn).setOnClickListener(this);
-
         findViewById(R.id.firebasefirestorebtn).setOnClickListener(this);
-
         findViewById(R.id.firebase_storage_btn).setOnClickListener(this);
+
 
     }
 

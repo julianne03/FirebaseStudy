@@ -55,6 +55,10 @@ public class CloudStorageActivity extends AppCompatActivity implements View.OnCl
             case R.id.download_btn :
                 intent = new Intent(this,DownloadActivity.class);
                 break;
+            case R.id.meta_info_btn :
+                intent = new Intent(this,MetaInfoActivity.class);
+            case R.id.delete_btn :
+                break;
             default:
                 break;
         }
