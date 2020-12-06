@@ -8,8 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import kr.hs.emirim.seungmin.firebasestart.cloudstorage.CloudStorageActivity;
 import kr.hs.emirim.seungmin.firebasestart.firestore.FirestoreActivity;
+import kr.hs.emirim.seungmin.firebasestart.hosting.HostingActivity;
+import kr.hs.emirim.seungmin.firebasestart.performance.PerformanceActivity;
 import kr.hs.emirim.seungmin.firebasestart.realtimedb.MemoActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -23,7 +27,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.firebaserealtimedbbtn).setOnClickListener(this);
         findViewById(R.id.firebasefirestorebtn).setOnClickListener(this);
         findViewById(R.id.firebase_storage_btn).setOnClickListener(this);
+        findViewById(R.id.firebasehostbtn).setOnClickListener(this);
+        findViewById(R.id.firebaseperformance).setOnClickListener(this);
 
+        FirebaseCrashlytics.getInstance().log("안녕하세요");
 
     }
 
@@ -48,6 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.firebase_storage_btn :
                 Intent i4 = new Intent(this, CloudStorageActivity.class);
                 startActivity(i4);
+                break;
+            case R.id.firebasehostbtn :
+                Intent i5 = new Intent(this, HostingActivity.class);
+                startActivity(i5);
+                break;
+            case R.id.firebaseperformance :
+                Intent i6 = new Intent(this, PerformanceActivity.class);
+                startActivity(i6);
                 break;
             default:
                 break;

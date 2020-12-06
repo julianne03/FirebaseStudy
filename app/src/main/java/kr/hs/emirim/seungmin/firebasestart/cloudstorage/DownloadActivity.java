@@ -53,7 +53,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
     private void showFirebaseUiDownloadImageView() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
-        StorageReference pathReference = storageReference.child("storage/images.jpeg");
+        StorageReference pathReference = storageReference.child("storage/dog.jpg");
         ImageView imageView = findViewById(R.id.storageImg);
         Glide.with(this)
                 .using(new FirebaseImageLoader())
@@ -66,7 +66,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
     private void showDownloadLocalFileImageView() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
-        StorageReference pathReference = storageReference.child("storage/images.jpeg");
+        StorageReference pathReference = storageReference.child("storage/dog.jpg");
 
         try {
             localfile = File.createTempFile("images","jpeg");
