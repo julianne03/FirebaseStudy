@@ -30,7 +30,6 @@ public class PerformanceActivity extends AppCompatActivity implements View.OnCli
 
     private Trace trace;
     final String IMAGE_URL = "https://www.google.com/logos/doodles/2020/december-holidays-days-2-30-6753651837108830.3-law.gif";
-    final String GOOGLE_URL = "https://google.com";
 
     @Override
     @AddTrace(name="onCreateTrace", enabled = true)
@@ -44,7 +43,7 @@ public class PerformanceActivity extends AppCompatActivity implements View.OnCli
 
         findViewById(R.id.foregroundbtn).setOnClickListener(this);
         findViewById(R.id.backgroundbtn).setOnClickListener(this);
-        findViewById(R.id.backgroundbtn).setOnClickListener(this);
+        findViewById(R.id.networkbtn).setOnClickListener(this);
         trace.putAttribute("onCreate","end");
     }
 
@@ -130,9 +129,9 @@ public class PerformanceActivity extends AppCompatActivity implements View.OnCli
             byte[] data = "TESTTESTTESTTESTTESTTESTTESTTESTTESTTEST!".getBytes();
             HttpMetric metric = FirebasePerformance
                     .getInstance()
-                    .newHttpMetric(GOOGLE_URL,FirebasePerformance.HttpMethod.GET);
+                    .newHttpMetric("https://www.google.com",FirebasePerformance.HttpMethod.GET);
 
-            final URL url = new URL(GOOGLE_URL);
+            final URL url = new URL("https://www.google.com");
             metric.start();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -149,12 +148,13 @@ public class PerformanceActivity extends AppCompatActivity implements View.OnCli
             conn.disconnect();
             metric.stop();
         } catch (Exception e) {
-
+            ;
         };
     }
 
     private void loadImageFromWeb(int target, String url) {
-        ImageView showImageView = findViewById(target);
+        ImageView showImageView = (ImageView)findViewById(R.id.showperfomanceimg);
+        Log.e("imageview","loadImageFromWeb");
         Glide.with(this)
                 .load(url)
                 .placeholder(new ColorDrawable(ContextCompat.getColor(this,R.color.colorAccent)))
